@@ -263,7 +263,7 @@ public class AuthController {
             throw new NotFoundException("Comfirm password  are wrong");
         }
 
-        //udate password
+        //update password
        // AppUser user = appUserService.getUserByEmail(email);
 
         AppUser appUser= appUserService.reSetPassword(resetPassword.getEmail(),resetPassword.getNewPassword());
