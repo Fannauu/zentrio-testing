@@ -19,4 +19,8 @@ public interface AppUserService extends UserDetailsService {
     void save(AppUser user);
 
     AppUserDTO registerGoogleUser(AppUserRequest request);
+    void saveReset(AppUser user);
+
+
+    AppUser resetPassword(String email, String newPassword);
 }

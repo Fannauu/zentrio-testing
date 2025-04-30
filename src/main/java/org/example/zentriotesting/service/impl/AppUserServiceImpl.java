@@ -74,6 +74,10 @@ public class AppUserServiceImpl implements AppUserService {
     }
 
     @Override
+    public void saveReset(AppUser user) {
+        appUserRepository.saveRest(user);
+    }
+    @Override
     public AppUserDTO registerGoogleUser(AppUserRequest request) {
 
         if(request.getEmail() == null || request.getEmail().isEmpty()) {
@@ -99,6 +103,10 @@ public class AppUserServiceImpl implements AppUserService {
         return appUser.toAppUserDTO(appUser);
     }
 
-
+    @Override
+    public AppUser resetPassword(String email, String newPassword){
+        String password = passwordEncoder.encode(newPassword);
+        return appUserRepository.reSetPassword(email, password);
+    }
 }
 
