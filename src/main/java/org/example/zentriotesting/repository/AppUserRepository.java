@@ -5,6 +5,8 @@ import org.example.zentriotesting.model.entity.AppUser;
 import org.example.zentriotesting.model.entity.request.AppUserRequest;
 import org.example.zentriotesting.model.entity.request.ProfileRequest;
 
+import java.time.LocalDateTime;
+
 @Mapper
 public interface AppUserRepository {
     @Select("""
@@ -17,6 +19,7 @@ public interface AppUserRepository {
             @Result(property = "email", column = "email"),
             @Result(property = "gender", column = "gender"),
             @Result(property = "password", column = "password"),
+            @Result(property = "provider", column = "provider"),
             @Result(property = "profileImage", column = "profile_image"),
             @Result(property = "isVerified", column = "is_verified"),
             @Result(property = "isReset", column = "is_reset"),
@@ -27,29 +30,30 @@ public interface AppUserRepository {
     AppUser getUserByEmail(String email) ;
 
     @Select("""
-     INSERT INTO users (username, email, gender, password, profile_image)
+     INSERT INTO users (username, email, gender, password, profile_image, created_at)
      VALUES (
              #{request.username},
              #{request.email},
              #{request.gender},
              #{request.password},
-             #{request.profileImage}
+             #{request.profileImage},
+             #{createdAt}
              )
      RETURNING *
  """)
     @ResultMap("UserMapper")
-    AppUser register(@Param("request") AppUserRequest appUserRequest);
+    AppUser register(@Param("request") AppUserRequest appUserRequest, LocalDateTime createdAt);
 
 
     @Select("""
-        UPDATE users set is_verified=#{req.isVerified}
+        UPDATE users set is_verified = #{req.isVerified}
         WHERE email = #{req.email}
     """)
     void save(@Param("req") AppUser user);
 
     @Select("""
         UPDATE users
-        SET username=#{req.username}, profile_image=#{req.profileImage}
+        SET username = #{req.username}, profile_image = #{req.profileImage}
         WHERE email = #{email}
         RETURNING *
     """)

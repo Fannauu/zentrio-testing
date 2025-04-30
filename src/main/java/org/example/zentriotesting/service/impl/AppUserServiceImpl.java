@@ -1,17 +1,13 @@
 package org.example.zentriotesting.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.example.zentriotesting.model.entity.AppUser;
 import org.example.zentriotesting.model.entity.Gender;
 import org.example.zentriotesting.model.entity.request.AppUserRequest;
 import org.example.zentriotesting.model.entity.request.ProfileRequest;
-import org.example.zentriotesting.model.entity.response.ApiResponse;
 import org.example.zentriotesting.model.entity.response.AppUserDTO;
-import org.example.zentriotesting.otp.OtpEntry;
 import org.example.zentriotesting.repository.AppUserRepository;
 import org.example.zentriotesting.service.AppUserService;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -38,12 +35,23 @@ public class AppUserServiceImpl implements AppUserService {
     @Override
     public AppUserDTO register(AppUserRequest request) {
         request.setPassword(passwordEncoder.encode(request.getPassword()));
-        if (request.getGender().equals(Gender.MALE)) {
+
+//        if (request.getGender().equals(Gender.MALE)) {
+//            request.setProfileImage("https://i.pinimg.com/736x/3e/9f/08/3e9f085ce52735854f9f2d4742f86659.jpg");
+//        } else {
+//            request.setProfileImage("https://i.pinimg.com/736x/d0/7b/a6/d07ba6dcf05fa86c0a61855bc722cb7a.jpg");
+//        }
+
+        if (request.getGender().equals(Gender.FEMALE)){
+            request.setProfileImage("https://i.pinimg.com/736x/60/a4/04/60a4046baaa616fd41ee84cf3ccc7953.jpg");
+        } else if (request.getGender().equals(Gender.MALE)) {
             request.setProfileImage("https://i.pinimg.com/736x/3e/9f/08/3e9f085ce52735854f9f2d4742f86659.jpg");
         } else {
+            request.setGender(Gender.RATHER_NOT_TO_SAY);
             request.setProfileImage("https://i.pinimg.com/736x/d0/7b/a6/d07ba6dcf05fa86c0a61855bc722cb7a.jpg");
         }
-        AppUser appUser = appUserRepository.register(request);
+
+        AppUser appUser = appUserRepository.register(request, LocalDateTime.now());
         return appUser.toAppUserDTO(appUser);
     }
 
@@ -73,8 +81,12 @@ public class AppUserServiceImpl implements AppUserService {
         appUserRepository.save(user);
     }
 
-
-
+    @Override
+    public UUID currentId() {
+        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        AppUser user = appUserRepository.getUserByEmail(authentication.getName());
+        return user.getUserId();
+    }
 
 
 }
