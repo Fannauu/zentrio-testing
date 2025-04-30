@@ -23,7 +23,9 @@ import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
 import java.util.Random;
@@ -52,7 +54,18 @@ public class AuthController {
 
     @PostMapping("/register")
 //    adding forgot Boolean isForgot for new flow with reset password
-    public ResponseEntity<?> register(@RequestBody AppUserRequest request) throws Exception {
+    public ResponseEntity<?> register(@RequestBody AppUserRequest request, @RequestParam String provider) throws Exception {
+
+        if (!provider.equals("credential") && !provider.equals("google")) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ApiResponse.<String>builder()
+                            .success(false)
+                            .message("Invalid registration type. Must be 'credential' or 'google'.")
+                            .status(HttpStatus.BAD_REQUEST)
+                            .timestamp(LocalDateTime.now())
+                            .build());
+        }
+
         System.out.println("request: " + request);
 
         AppUser existingUser = appUserService.getUserByEmail(request.getEmail());
@@ -68,23 +81,37 @@ public class AuthController {
         }
 
 
-        AppUserDTO registerUser = appUserService.register(request);
+//        AppUserDTO registerUser = appUserService.register(request);
+        AppUserDTO registerUser;
 
-        // If the registerUser is null, return an error
-        if (registerUser == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(ApiResponse.<AppUserDTO>builder()
-                            .success(false)
-                            .message("Failed to register the user. Possible duplicate email or validation error.")
-                            .status(HttpStatus.BAD_REQUEST)
-                            .timestamp(LocalDateTime.now())
-                            .build());
+        if (provider.equals("credential")) {
+            registerUser = appUserService.register(request);
+
+            if (registerUser == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(ApiResponse.<AppUserDTO>builder()
+                                .success(false)
+                                .message("Failed to register the user. Possible duplicate email or validation error.")
+                                .status(HttpStatus.BAD_REQUEST)
+                                .timestamp(LocalDateTime.now())
+                                .build());
+            }
+            // Send OTP
+            String otpRandom = String.valueOf(new Random().nextInt(900000) + 100000);
+            otpService.sendOtp(otpRandom, registerUser.getEmail());
+            emailService.sendOtpEmail(registerUser.getEmail(), otpRandom);
+        } else {
+            registerUser = appUserService.registerGoogleUser(request);
+            if (registerUser == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(ApiResponse.<AppUserDTO>builder()
+                                .success(false)
+                                .message("Google registration failed.")
+                                .status(HttpStatus.BAD_REQUEST)
+                                .timestamp(LocalDateTime.now())
+                                .build());
+            }
         }
-
-        // Send OTP
-        String otpRandom = String.valueOf(new Random().nextInt(900000) + 100000);
-        otpService.sendOtp(otpRandom, registerUser.getEmail());
-        emailService.sendOtpEmail(registerUser.getEmail(), otpRandom);
 
         // Success response
         ApiResponse<AppUserDTO> apiResponse = ApiResponse.<AppUserDTO>builder()

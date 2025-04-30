@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form th:action="@{/register}" method="post" th:object="${user}">
+    <label>
+        Username:
+        <input type="text" th:field="*{username}" required>
+    </label>
+
+    <label>
+        Email:
+        <input type="email" th:field="*{email}" required>
+    </label>
+
+    <label>
+        Registration Type:
+        <select id="provider" name="provider" onchange="toggleFields()" required>
+            <option value="credential">Email</option>
+            <option value="google">Google</option>
+        </select>
+    </label>
+
+    <div id="credentialFields">
+        <label>
+            Password:
+            <input type="password" th:field="*{password}">
+        </label>
+
+        <label>
+            Gender:
+            <input type="text" th:field="*{gender}">
+        </label>
+    </div>
+
+    <label>
+        Profile Image URL:
+        <input type="text" th:field="*{profileImage}">
+    </label>
+
+    <br>
+    <button type="submit">Register</button>
+</form>
+
+<script>
+    function toggleFields() {
+        const provider = document.getElementById('provider').value;
+        document.getElementById('credentialFields').style.display = (provider === 'credential') ? 'block' : 'none';
+    }
+
+    toggleFields(); // Run on page load
+</script>
+
+</body>
+</html>

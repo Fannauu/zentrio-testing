@@ -73,8 +73,31 @@ public class AppUserServiceImpl implements AppUserService {
         appUserRepository.save(user);
     }
 
+    @Override
+    public AppUserDTO registerGoogleUser(AppUserRequest request) {
 
+        if(request.getEmail() == null || request.getEmail().isEmpty()) {
+            return null;
+        }
 
+        AppUser existingUser = appUserRepository.getUserByEmail(request.getEmail());
+        if(existingUser != null) {
+            return null;
+        }
+
+        AppUser newUser = new AppUser();
+        newUser.setEmail(request.getEmail());
+        newUser.setUsername(request.getUsername());
+        newUser.setProvider("google");
+//        newUser.setPassword(request.);
+        newUser.setIsVerified(true);
+        newUser.setCreatedAt(LocalDateTime.now());
+
+        System.out.println("Test: " + newUser);
+        AppUser appUser = appUserRepository.registerGoogleUser(newUser);
+
+        return appUser.toAppUserDTO(appUser);
+    }
 
 
 }

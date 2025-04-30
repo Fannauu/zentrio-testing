@@ -25,6 +25,7 @@ public class AppUser implements UserDetails {
     private String email;
     private String password;
     private Gender gender;
+    private String provider;
     private String profileImage;
     private Boolean isVerified;
     private Boolean isReset;

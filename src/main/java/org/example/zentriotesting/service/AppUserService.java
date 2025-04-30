@@ -17,4 +17,6 @@ public interface AppUserService extends UserDetailsService {
     AppUserDTO updateUserProfile(ProfileRequest request);
 
     void save(AppUser user);
+
+    AppUserDTO registerGoogleUser(AppUserRequest request);
 }

@@ -15,5 +15,6 @@ public class AppUserRequest {
     private Gender gender;
     private String email;
     private String password;
+    private String provider;
     private String profileImage;
 }
