@@ -48,6 +48,13 @@ public interface AppUserRepository {
     void save(@Param("req") AppUser user);
 
     @Select("""
+        UPDATE users set is_reset=#{req.isReset}
+        WHERE email = #{req.email}
+    """)
+    void saveRest(@Param("req") AppUser user);
+
+
+    @Select("""
         UPDATE users
         SET username=#{req.username}, profile_image=#{req.profileImage}
         WHERE email = #{email}
@@ -55,4 +62,16 @@ public interface AppUserRepository {
     """)
     @ResultMap("UserMapper")
     AppUser updateUserProfile(String email, @Param("req") ProfileRequest request);
+
+
+
+    @Select("""
+        UPDATE  users
+        SET password= #{newPassword}
+        WHERE email=#{email}
+        RETURNING*
+        """
+    )
+
+    AppUser reSetPassword(String email, String newPassword);
 }

@@ -1,3 +1,6 @@
+
+
+
 -- Create extension for uuid
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
@@ -25,11 +28,11 @@ CREATE TABLE roles (
 INSERT INTO roles(role_name) VALUES ('ROLE_MANAGER'), ('ROLE_LEADER'), ('ROLE_MEMBER');
 
 -- Create the user_roles junction table
-CREATE TABLE user_roles (
-                            user_role_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-                            user_id UUID NOT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
-                            role_id UUID NOT NULL REFERENCES roles(role_id) ON DELETE CASCADE ON UPDATE CASCADE
-);
+-- CREATE TABLE user_roles (
+--                             user_role_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+--                             user_id UUID NOT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
+--                             role_id UUID NOT NULL REFERENCES roles(role_id) ON DELETE CASCADE ON UPDATE CASCADE
+-- );
 
 -- Create the workspaces table
 CREATE TABLE workspaces (

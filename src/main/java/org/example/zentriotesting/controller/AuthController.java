@@ -4,10 +4,12 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
+import org.example.zentriotesting.exception.NotFoundException;
 import org.example.zentriotesting.jwt.JwtService;
 import org.example.zentriotesting.model.entity.AppUser;
 import org.example.zentriotesting.model.entity.request.AppUserRequest;
 import org.example.zentriotesting.model.entity.request.AuthRequest;
+import org.example.zentriotesting.model.entity.request.ResetPassword;
 import org.example.zentriotesting.model.entity.response.ApiResponse;
 import org.example.zentriotesting.model.entity.response.AppUserDTO;
 import org.example.zentriotesting.model.entity.response.TokenResponse;
@@ -170,6 +172,48 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
     }
 
+    @PostMapping("/verify-password")
+    @Operation(summary = "Verify Reset Password")
+    public ResponseEntity<ApiResponse<String>> verifyPassword(@RequestParam String email, @RequestParam String otp) throws Exception {
+        OtpEntry otpEntry = otpService.getOtp(email);
+
+        if (otpEntry == null) {
+            throw new BadCredentialsException("OTP not found or expired.");
+        }
+
+        if (LocalDateTime.now().isAfter(otpEntry.getExpiryTime())) {
+            otpService.clearOtp(email);
+            throw new BadCredentialsException("OTP is expired.");
+        }
+
+        if (!otpEntry.getOtp().equals(otp)) {
+            throw new BadCredentialsException("Invalid otp please try again later.");
+        }
+
+        AppUser user = appUserService.getUserByEmail(email);
+
+        if (user == null) {
+            throw new BadCredentialsException("User email not found.");
+        }
+
+        if (user.getIsReset()) {
+            throw new BadCredentialsException("User already is verified");
+        }
+        user.setIsReset(true);
+        appUserService.saveReset(user);
+        otpService.clearOtp(email);
+
+
+        ApiResponse<String> apiResponse = ApiResponse.<String>builder()
+                .success(true)
+                .message("verified successfully ")
+                .payload("...")
+                .status(HttpStatus.OK)
+                .timestamp(LocalDateTime.now())
+                .build();
+        return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
+    }
+
     @Operation(summary = "Resend otp")
     @PostMapping("/resend")
     public ResponseEntity<ApiResponse<String>> resend(@RequestParam String email) throws MessagingException {
@@ -197,6 +241,44 @@ public class AuthController {
                 .build();
         return ResponseEntity.ok(apiResponse);
     }
+
+    @Operation(summary = "Reset Password")
+    @PutMapping("/reset-password")
+    public ResponseEntity<ApiResponse<String>> resetPassword(@RequestBody ResetPassword resetPassword) {
+        AppUser userDetails = appUserService.getUserByEmail(resetPassword.getEmail());
+        if (userDetails == null) {
+            ApiResponse<String> apiResponse = ApiResponse.<String>builder()
+                    .success(false)
+                    .message("User email not found.")
+                    .payload("...")
+                    .status(HttpStatus.NOT_FOUND)
+                    .timestamp(LocalDateTime.now())
+                    .build();
+            return ResponseEntity.ok(apiResponse);
+        }
+        if (!userDetails.getIsReset()){
+            throw new NotFoundException("User are not verified yet!!");
+        }
+        if (!resetPassword.getNewPassword().equals(resetPassword.getConfirmNewPassword())){
+            throw new NotFoundException("Comfirm password  are wrong");
+        }
+
+        //udate password
+       // AppUser user = appUserService.getUserByEmail(email);
+
+        AppUser appUser= appUserService.reSetPassword(resetPassword.getEmail(),resetPassword.getNewPassword());
+        appUser.setIsReset(false);
+        appUserService.saveReset(appUser);
+        ApiResponse<String> apiResponse = ApiResponse.<String>builder()
+                .success(true)
+                .message("Password reset successfully ")
+                .payload("...")
+                .status(HttpStatus.CREATED)
+                .timestamp(LocalDateTime.now())
+                .build();
+        return ResponseEntity.ok(apiResponse);
+    }
+
 
 }
 

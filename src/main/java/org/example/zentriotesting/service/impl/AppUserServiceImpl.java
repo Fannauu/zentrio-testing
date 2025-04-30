@@ -64,6 +64,7 @@ public class AppUserServiceImpl implements AppUserService {
     public AppUserDTO updateUserProfile(ProfileRequest request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         AppUser appUser = appUserRepository.updateUserProfile(authentication.getName(),request);
+        System.out.printf(authentication.getName());
         AppUserDTO appUserDTO = appUser.toAppUserDTO(appUser);
         return appUserDTO;
     }
@@ -73,8 +74,18 @@ public class AppUserServiceImpl implements AppUserService {
         appUserRepository.save(user);
     }
 
+    @Override
+    public void saveReset(AppUser user) {
+        appUserRepository.saveRest(user);
+    }
 
 
+    @Override
+    public AppUser reSetPassword(String email, String newPassword){
+        String password = passwordEncoder.encode(newPassword);
+
+        return appUserRepository.reSetPassword(email, password);
+    }
 
 
 }

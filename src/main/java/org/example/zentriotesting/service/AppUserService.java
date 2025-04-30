@@ -17,4 +17,8 @@ public interface AppUserService extends UserDetailsService {
     AppUserDTO updateUserProfile(ProfileRequest request);
 
     void save(AppUser user);
+    void saveReset(AppUser user);
+
+
+    AppUser reSetPassword(String email, String newPassword);
 }
