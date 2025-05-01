@@ -1,8 +1,10 @@
 package org.example.zentriotesting.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.example.zentriotesting.exception.NotFoundException;
 import org.example.zentriotesting.model.entity.AppUser;
 import org.example.zentriotesting.model.entity.Board;
+import org.example.zentriotesting.model.entity.Workspace;
 import org.example.zentriotesting.model.entity.request.BoardRequest;
 import org.example.zentriotesting.repository.AppUserRepository;
 import org.example.zentriotesting.repository.BoardRepository;
@@ -28,10 +30,12 @@ public class BoardServiceImpl implements BoardService {
     public Board createBoard(UUID workspaceId, BoardRequest boardRequest) {
 
         UUID currentUserId = appUserService.getCurrentUserId();
+        Workspace workspaceById = workspaceRepository.getWorkspaceById(workspaceId, currentUserId);
 //        UUID getWorkspaceId = workspaceRepository.getWorkspaceIdByCurrentUser(currentUserId);
-        boardRepository.createBoard(workspaceId, boardRequest, currentUserId);
-
-        return null;
+        if (workspaceById.getWorkspaceId() != workspaceId){
+            throw new NotFoundException("Workspace Id not found");
+        }
+        return boardRepository.createBoard(workspaceById.getWorkspaceId(), boardRequest);
     }
 
 //    public Boolean isVerifeied(){

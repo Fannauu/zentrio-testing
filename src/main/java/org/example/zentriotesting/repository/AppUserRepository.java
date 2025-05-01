@@ -80,6 +80,6 @@ public interface AppUserRepository {
     @Select("""
         SELECT users.user_id FROM users WHERE email = #{email}
     """)
-    @ResultMap("UserMapper")
+//    @ResultMap("UserMapper")
     UUID getCurrentUserId(String email);
 }

@@ -8,6 +8,7 @@ import org.example.zentriotesting.model.entity.request.WorkspaceRequest;
 import org.example.zentriotesting.model.entity.response.AppUserDTO;
 import org.example.zentriotesting.repository.AppUserRepository;
 import org.example.zentriotesting.repository.WorkspaceRepository;
+import org.example.zentriotesting.service.AppUserService;
 import org.example.zentriotesting.service.WorkspaceService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,6 +23,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
     private final WorkspaceRepository workspaceRepository;
     private final AppUserRepository appUserRepository;
+    private final AppUserService appUserService;
 
     @Override
     public Workspace createWorkspace(WorkspaceRequest workspaceRequest) {
@@ -51,7 +53,9 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         AppUser user = appUserRepository.getUserByEmail(authentication.getName());
 //        UserDTO userDTO = user.toDTO(user);
         AppUserDTO userDTO = user.toAppUserDTO(user);
-        return workspaceRepository.getWorkspaceById(workspaceId, userDTO.getUserId());
+        UUID currentId = appUserService.getCurrentUserId();
+        System.out.println("User Id : " + userDTO.getUserId());
+        return workspaceRepository.getWorkspaceById(workspaceId, currentId);
     }
 
     @Override

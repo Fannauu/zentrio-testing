@@ -10,6 +10,6 @@ public class BoardRequest {
     private String title;
     private String description;
     private String cover;
-    private Boolean isFavourite;
+//    private Boolean isFavourite;
 //    private UUID workspaceId;
 }

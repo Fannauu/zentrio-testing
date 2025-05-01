@@ -38,7 +38,7 @@ public interface WorkspaceRepository {
     Workspace getWorkspaceById(UUID workspaceId, UUID userId);
 
     @Select("""
-        SELECT * FROM workspaces WHERE title ILIKE '%' || #{title} || '%' AND created_by = #{userId}
+        SELECT * FROM workspaces WHERE title ILIKE '%'||#{title}||'%' AND created_by = #{userId}
     """)
     @ResultMap("workspaceMapper")
     Workspace getWorkspaceByTitle(String title, UUID userId);
@@ -54,7 +54,7 @@ public interface WorkspaceRepository {
     @Select("""
         UPDATE workspaces 
         SET title = #{request.title}, description = #{request.description}
-        WHERE title LIKE %#{title} AND created_by = #{userId}
+        WHERE title ILIKE '%' || #{title} || '%' AND created_by = #{userId}
     """)
     @ResultMap("workspaceMapper")
     Workspace updateWorkspaceByTitle(String title, @Param("request") WorkspaceRequest workspaceRequest, UUID userId);

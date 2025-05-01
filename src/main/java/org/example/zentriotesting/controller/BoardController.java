@@ -27,8 +27,8 @@ public class BoardController {
     private final BoardService boardService;
 
     @Operation(summary = "Create board by workspaceId")
-    @PostMapping()
-    public ResponseEntity<ApiResponse<Board>> createBoard(@PathVariable UUID workspaceId, @RequestBody BoardRequest boardRequest){
+    @PostMapping("/{workspace-id}")
+    public ResponseEntity<ApiResponse<Board>> createBoard(@PathVariable("workspace-id") UUID workspaceId, @RequestBody BoardRequest boardRequest){
         ApiResponse<Board> response = ApiResponse.<Board> builder()
                 .success(true)
                 .message("Created board successfully!")

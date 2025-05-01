@@ -54,8 +54,8 @@ public class WorkspaceController {
     }
 
     @Operation(summary = "Get workspace by id")
-    @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<Workspace>> getWorkspaceById(@PathVariable UUID workspaceId){
+    @GetMapping("workspace-id/{workspace-id}")
+    public ResponseEntity<ApiResponse<Workspace>> getWorkspaceById(@PathVariable("workspace-id") UUID workspaceId){
         ApiResponse<Workspace> response = ApiResponse.<Workspace> builder()
                 .success(true)
                 .message("Get workspace by id successfully!")
@@ -68,8 +68,8 @@ public class WorkspaceController {
     }
 
     @Operation(summary = "Get workspace by title")
-    @GetMapping("/{title}")
-    public ResponseEntity<ApiResponse<Workspace>> getWorkspaceByTitle(@PathVariable String title){
+    @GetMapping("title/{title}")
+    public ResponseEntity<ApiResponse<Workspace>> getWorkspaceByTitle(@PathVariable("title") String title){
         ApiResponse<Workspace> response = ApiResponse.<Workspace> builder()
                 .success(true)
                 .message("Get workspace by title successfully!")
@@ -82,8 +82,8 @@ public class WorkspaceController {
     }
 
     @Operation(summary = "Edit workspace by id")
-    @PutMapping("/update/{id}")
-    public ResponseEntity<ApiResponse<Workspace>> updateWorkspaceById(@PathVariable("id") UUID workspaceId, @RequestBody WorkspaceRequest workspaceRequest){
+    @PutMapping("/update/{workspace-id}")
+    public ResponseEntity<ApiResponse<Workspace>> updateWorkspaceById(@PathVariable("workspace-id") UUID workspaceId, @RequestBody WorkspaceRequest workspaceRequest){
         ApiResponse<Workspace> response = ApiResponse.<Workspace> builder()
                 .success(true)
                 .message("Update workspace by id successfully!")
@@ -97,7 +97,7 @@ public class WorkspaceController {
 
     @Operation(summary = "Edit workspace by title")
     @PutMapping("/update/{title}")
-    public ResponseEntity<ApiResponse<Workspace>> updateWorkspaceByTitle(@PathVariable String title, @RequestBody WorkspaceRequest workspaceRequest){
+    public ResponseEntity<ApiResponse<Workspace>> updateWorkspaceByTitle(@PathVariable("title") String title, @RequestBody WorkspaceRequest workspaceRequest){
         ApiResponse<Workspace> response = ApiResponse.<Workspace> builder()
                 .success(true)
                 .message("Update workspace by title successfully!")
