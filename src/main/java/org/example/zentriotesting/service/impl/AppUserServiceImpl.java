@@ -38,9 +38,12 @@ public class AppUserServiceImpl implements AppUserService {
     @Override
     public AppUserDTO register(AppUserRequest request) {
         request.setPassword(passwordEncoder.encode(request.getPassword()));
-        if (request.getGender().equals(Gender.MALE)) {
+        if (request.getGender().equals(Gender.FEMALE)){
+            request.setProfileImage("https://i.pinimg.com/736x/60/a4/04/60a4046baaa616fd41ee84cf3ccc7953.jpg");
+        } else if (request.getGender().equals(Gender.MALE)) {
             request.setProfileImage("https://i.pinimg.com/736x/3e/9f/08/3e9f085ce52735854f9f2d4742f86659.jpg");
         } else {
+            request.setGender(Gender.RATHER_NOT_TO_SAY);
             request.setProfileImage("https://i.pinimg.com/736x/d0/7b/a6/d07ba6dcf05fa86c0a61855bc722cb7a.jpg");
         }
         AppUser appUser = appUserRepository.register(request);
@@ -89,16 +92,28 @@ public class AppUserServiceImpl implements AppUserService {
             return null;
         }
 
-        AppUser newUser = new AppUser();
-        newUser.setEmail(request.getEmail());
-        newUser.setUsername(request.getUsername());
-        newUser.setProvider("google");
-//        newUser.setPassword(request.);
-        newUser.setIsVerified(true);
-        newUser.setCreatedAt(LocalDateTime.now());
+//        AppUser newUser = new AppUser();
+//        newUser.setEmail(request.getEmail());
+//        newUser.setUsername(request.getUsername());
+//        newUser.setProvider("google");
+////        newUser.setPassword(request.);
+//        newUser.setIsVerified(true);
+//        newUser.setCreatedAt(LocalDateTime.now());
+//
+//        System.out.println("Test: " + newUser);
+//        AppUser appUser = appUserRepository.registerGoogleUser(newUser);
 
-        System.out.println("Test: " + newUser);
-        AppUser appUser = appUserRepository.registerGoogleUser(newUser);
+        //Modified loginWithGoogle
+        request.setEmail(request.getEmail());
+        request.setUsername(request.getUsername());
+        request.setProvider("google");
+//        newUser.setPassword(request.);
+//        newUser.setIsVerified(true);
+//        newUser.setCreatedAt(LocalDateTime.now());
+
+        System.out.println("Test: " + request);
+        AppUser appUser = appUserRepository.registerGoogleUser(request);
+        appUser.setIsVerified(true);
 
         return appUser.toAppUserDTO(appUser);
     }

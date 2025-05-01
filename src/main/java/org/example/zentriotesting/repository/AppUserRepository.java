@@ -17,6 +17,7 @@ public interface AppUserRepository {
             @Result(property = "email", column = "email"),
             @Result(property = "gender", column = "gender"),
             @Result(property = "password", column = "password"),
+            @Result(property = "provider", column = "provider"),
             @Result(property = "profileImage", column = "profile_image"),
             @Result(property = "isVerified", column = "is_verified"),
             @Result(property = "isReset", column = "is_reset"),
@@ -43,13 +44,13 @@ public interface AppUserRepository {
 
 
     @Select("""
-                UPDATE users set is_verified=#{req.isVerified}
+                UPDATE users set is_verified = #{req.isVerified}
                 WHERE email = #{req.email}
             """)
     void save(@Param("req") AppUser user);
 
     @Select("""
-        UPDATE users set is_reset=#{req.isReset}
+        UPDATE users set is_reset = #{req.isReset}
         WHERE email = #{req.email}
     """)
     void saveRest(@Param("req") AppUser user);
@@ -57,7 +58,7 @@ public interface AppUserRepository {
 
     @Select("""
                 UPDATE users
-                SET username=#{req.username}, profile_image=#{req.profileImage}
+                SET username = #{req.username}, profile_image = #{req.profileImage}
                 WHERE email = #{email}
                 RETURNING *
             """)
@@ -76,12 +77,9 @@ public interface AppUserRepository {
                      #{request.profileImage}
                     )
                 RETURNING *
-            
-            
-            
             """)
     @ResultMap("UserMapper")
-    AppUser registerGoogleUser(@Param("request") AppUser newUser);
+    AppUser registerGoogleUser(@Param("request") AppUserRequest newUser);
 
 
 
