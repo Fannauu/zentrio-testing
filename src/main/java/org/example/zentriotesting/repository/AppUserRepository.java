@@ -44,9 +44,9 @@ public interface AppUserRepository {
 
 
     @Select("""
-                UPDATE users set is_verified = #{req.isVerified}
-                WHERE email = #{req.email}
-            """)
+        UPDATE users set is_verified = #{req.isVerified}
+        WHERE email = #{req.email}
+    """)
     void save(@Param("req") AppUser user);
 
     @Select("""
@@ -57,11 +57,11 @@ public interface AppUserRepository {
 
 
     @Select("""
-                UPDATE users
-                SET username = #{req.username}, profile_image = #{req.profileImage}
-                WHERE email = #{email}
-                RETURNING *
-            """)
+        UPDATE users
+        SET username = #{req.username}, profile_image = #{req.profileImage}
+        WHERE email = #{email}
+        RETURNING *
+    """)
     @ResultMap("UserMapper")
     AppUser updateUserProfile(String email, @Param("req") ProfileRequest request);
 

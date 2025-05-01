@@ -103,6 +103,7 @@ public class AppUserServiceImpl implements AppUserService {
 //        System.out.println("Test: " + newUser);
 //        AppUser appUser = appUserRepository.registerGoogleUser(newUser);
 
+
         //Modified loginWithGoogle
         request.setEmail(request.getEmail());
         request.setUsername(request.getUsername());
