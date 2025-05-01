@@ -5,6 +5,8 @@ import org.example.zentriotesting.model.entity.AppUser;
 import org.example.zentriotesting.model.entity.request.AppUserRequest;
 import org.example.zentriotesting.model.entity.request.ProfileRequest;
 
+import java.util.UUID;
+
 @Mapper
 public interface AppUserRepository {
     @Select("""
@@ -42,13 +44,13 @@ public interface AppUserRepository {
 
 
     @Select("""
-        UPDATE users set is_verified=#{req.isVerified}
+        UPDATE users set is_verified = #{req.isVerified}
         WHERE email = #{req.email}
     """)
     void save(@Param("req") AppUser user);
 
     @Select("""
-        UPDATE users set is_reset=#{req.isReset}
+        UPDATE users set is_reset = #{req.isReset}
         WHERE email = #{req.email}
     """)
     void saveRest(@Param("req") AppUser user);
@@ -56,7 +58,7 @@ public interface AppUserRepository {
 
     @Select("""
         UPDATE users
-        SET username=#{req.username}, profile_image=#{req.profileImage}
+        SET username = #{req.username}, profile_image = #{req.profileImage}
         WHERE email = #{email}
         RETURNING *
     """)
@@ -74,4 +76,10 @@ public interface AppUserRepository {
     )
 
     AppUser reSetPassword(String email, String newPassword);
+
+    @Select("""
+        SELECT users.user_id FROM users WHERE email = #{email}
+    """)
+    @ResultMap("UserMapper")
+    UUID getCurrentUserId(String email);
 }
