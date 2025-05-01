@@ -20,6 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -38,10 +39,27 @@ public class AppUserServiceImpl implements AppUserService {
     @Override
     public AppUserDTO register(AppUserRequest request) {
         request.setPassword(passwordEncoder.encode(request.getPassword()));
-        if (request.getGender().equals(Gender.MALE)) {
-            request.setProfileImage("https://i.pinimg.com/736x/3e/9f/08/3e9f085ce52735854f9f2d4742f86659.jpg");
+        String profileImage = request.getProfileImage();
+
+        if (request.getGender().equals(Gender.FEMALE)){
+            if (!profileImage.isEmpty()){
+                request.setProfileImage(profileImage);
+            }else {
+                request.setProfileImage("https://i.pinimg.com/736x/60/a4/04/60a4046baaa616fd41ee84cf3ccc7953.jpg");
+            }
+        } else if (request.getGender().equals(Gender.MALE)) {
+            if (!profileImage.isEmpty()){
+                request.setProfileImage(profileImage);
+            }else {
+                request.setProfileImage("https://i.pinimg.com/736x/3e/9f/08/3e9f085ce52735854f9f2d4742f86659.jpg");
+            }
         } else {
-            request.setProfileImage("https://i.pinimg.com/736x/d0/7b/a6/d07ba6dcf05fa86c0a61855bc722cb7a.jpg");
+            request.setGender(Gender.RATHER_NOT_TO_SAY);
+            if (!profileImage.isEmpty()){
+                request.setProfileImage(profileImage);
+            }else {
+                request.setProfileImage("https://i.pinimg.com/736x/d0/7b/a6/d07ba6dcf05fa86c0a61855bc722cb7a.jpg");
+            }
         }
         AppUser appUser = appUserRepository.register(request);
         return appUser.toAppUserDTO(appUser);
@@ -64,6 +82,7 @@ public class AppUserServiceImpl implements AppUserService {
     public AppUserDTO updateUserProfile(ProfileRequest request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         AppUser appUser = appUserRepository.updateUserProfile(authentication.getName(),request);
+        System.out.printf(authentication.getName());
         AppUserDTO appUserDTO = appUser.toAppUserDTO(appUser);
         return appUserDTO;
     }
@@ -77,6 +96,8 @@ public class AppUserServiceImpl implements AppUserService {
     public void saveReset(AppUser user) {
         appUserRepository.saveRest(user);
     }
+
+
     @Override
     public AppUserDTO registerGoogleUser(AppUserRequest request) {
 
@@ -104,9 +125,19 @@ public class AppUserServiceImpl implements AppUserService {
     }
 
     @Override
-    public AppUser resetPassword(String email, String newPassword){
+    public AppUser reSetPassword(String email, String newPassword){
         String password = passwordEncoder.encode(newPassword);
+
         return appUserRepository.reSetPassword(email, password);
     }
+
+    @Override
+    public UUID getCurrentUserId() {
+        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        AppUser currentUser = appUserRepository.getUserByEmail(authentication.getName());
+        return appUserRepository.getCurrentUserId(currentUser.getEmail());
+    }
+
+
 }
 

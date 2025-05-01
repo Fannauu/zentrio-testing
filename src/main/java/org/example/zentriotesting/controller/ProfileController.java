@@ -1,5 +1,6 @@
 package org.example.zentriotesting.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.example.zentriotesting.model.entity.request.ProfileRequest;
 import org.example.zentriotesting.model.entity.response.ApiResponse;
@@ -8,10 +9,7 @@ import org.example.zentriotesting.service.AppUserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 
@@ -25,6 +23,7 @@ public class ProfileController {
     private final AppUserService appUserService;
 
     @GetMapping()
+    @Operation(summary = "Get Current User")
     public ResponseEntity<ApiResponse<AppUserDTO>> getProfile() {
         ApiResponse<AppUserDTO> apiResponse = ApiResponse.<AppUserDTO>builder()
                 .success(true)
@@ -36,8 +35,9 @@ public class ProfileController {
         return new ResponseEntity<>(apiResponse, HttpStatus.OK);
     }
 
-    @PutMapping
-    public ResponseEntity<ApiResponse<AppUserDTO>> updateUserProfile(ProfileRequest profileRequest) {
+    @PutMapping("/updadte-profile")
+    @Operation(summary = "Update User Profile")
+    public ResponseEntity<ApiResponse<AppUserDTO>> updateUserProfile(@RequestBody ProfileRequest profileRequest) {
         ApiResponse<AppUserDTO> apiResponse = ApiResponse.<AppUserDTO>builder()
                 .success(true)
                 .message("Updated profile successfully")

@@ -10,11 +10,14 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Workspace {
-    private UUID workspaceId;
+public class Board {
+    private UUID boardId;
     private String title;
     private String description;
+    private String cover;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private UUID createdBy;
+    private Boolean isFavourite;
+    private Boolean isVerified;
+    private Workspace workspaceId;
 }

@@ -10,11 +10,10 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Workspace {
-    private UUID workspaceId;
+public class GanttChart {
+    private UUID ganttChartId;
     private String title;
-    private String description;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private UUID createdBy;
+    private Board board_id;
 }

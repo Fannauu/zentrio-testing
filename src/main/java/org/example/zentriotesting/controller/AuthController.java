@@ -293,7 +293,7 @@ public class AuthController {
         //update password
        // AppUser user = appUserService.getUserByEmail(email);
 
-        AppUser appUser= appUserService.resetPassword(resetPassword.getEmail(),resetPassword.getNewPassword());
+        AppUser appUser= appUserService.reSetPassword(resetPassword.getEmail(),resetPassword.getNewPassword());
         appUser.setIsReset(false);
         appUserService.saveReset(appUser);
         ApiResponse<String> apiResponse = ApiResponse.<String>builder()

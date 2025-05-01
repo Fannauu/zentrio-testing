@@ -7,6 +7,8 @@ import org.example.zentriotesting.model.entity.response.ApiResponse;
 import org.example.zentriotesting.model.entity.response.AppUserDTO;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
+import java.util.UUID;
+
 public interface AppUserService extends UserDetailsService {
     AppUserDTO register(AppUserRequest request);
 
@@ -21,6 +23,7 @@ public interface AppUserService extends UserDetailsService {
     AppUserDTO registerGoogleUser(AppUserRequest request);
     void saveReset(AppUser user);
 
+    AppUser reSetPassword(String email, String newPassword);
 
-    AppUser resetPassword(String email, String newPassword);
+    UUID getCurrentUserId();
 }

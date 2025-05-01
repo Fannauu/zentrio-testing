@@ -31,8 +31,8 @@ public class AppUserDTO {
         this.updatedAt = LocalDateTime.now();
     }
 
-    public AppUserDTO(UUID userId, String email) {
+    public AppUserDTO(UUID userId, String identifier) {
         this.userId = userId;
-        this.email = email;
+        this.email = identifier;
     }
 }

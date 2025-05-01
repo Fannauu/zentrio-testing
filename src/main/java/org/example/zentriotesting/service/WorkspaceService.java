@@ -7,10 +7,16 @@ import java.util.List;
 import java.util.UUID;
 
 public interface WorkspaceService {
-    Workspace createNewWorkspace(WorkspaceRequest workspaceRequest);
+
+    Workspace createWorkspace(WorkspaceRequest workspaceRequest);
 
     List<Workspace> getAllWorkspaces();
 
-    Workspace updateWorkspace(UUID workspaceId , WorkspaceRequest workspaceRequest);
+    Workspace getWorkspaceByTitle(String title);
 
+    Workspace updateWorkspaceByTitle(String title, WorkspaceRequest workspaceRequest);
+
+    Workspace getWorkspaceById(UUID workspaceId);
+
+    Workspace updateWorkspaceById(UUID workspaceId, WorkspaceRequest workspaceRequest);
 }
