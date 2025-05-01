@@ -10,9 +10,9 @@ import java.util.UUID;
 public interface BoardRepository {
 
     @Select("""
-        INSERT INTO boards(title, description, cover, workspace_id) 
-        VALUES (#{request.title}, #{request.description}, #{request.cover}, #{workspaceId})
-        
+        INSERT INTO boards(title, description, cover, workspace_id, is_verified) 
+        VALUES (#{request.title}, #{request.description}, #{request.cover}, #{request.workspaceId}, #{request.isVerified})
+        RETURNING *
     """)
     @Results(id = "boardMapper", value = {
             @Result(property = "boardId", column = "board_id"),
@@ -25,5 +25,5 @@ public interface BoardRepository {
             @Result(property = "isVerified", column = "is_verified"),
             @Result(property = "workspaceId", column = "workspace_id"),
     })
-    Board createBoard(UUID workspaceId, @Param("request") BoardRequest boardRequest);
+    Board createBoard(@Param("request") BoardRequest boardRequest);
 }

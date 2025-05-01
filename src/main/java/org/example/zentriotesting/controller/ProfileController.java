@@ -1,6 +1,7 @@
 package org.example.zentriotesting.controller;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.example.zentriotesting.model.entity.request.ProfileRequest;
 import org.example.zentriotesting.model.entity.response.ApiResponse;
 import org.example.zentriotesting.model.entity.response.AppUserDTO;
@@ -20,6 +21,7 @@ import java.time.LocalDateTime;
 @RequestMapping("api/v1/profiles")
 @RequiredArgsConstructor
 @SecurityRequirement(name = "bearerAuth")
+@Tag(name = "Profile Controller")
 public class ProfileController {
 
     private final AppUserService appUserService;

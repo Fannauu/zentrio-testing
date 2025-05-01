@@ -7,5 +7,5 @@ import java.util.UUID;
 
 public interface BoardService {
 
-    Board createBoard(UUID workspaceId, BoardRequest boardRequest);
+    Board createBoard(BoardRequest boardRequest);
 }

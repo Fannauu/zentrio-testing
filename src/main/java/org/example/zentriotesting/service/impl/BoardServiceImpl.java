@@ -27,15 +27,22 @@ public class BoardServiceImpl implements BoardService {
     private final WorkspaceRepository workspaceRepository;
 
     @Override
-    public Board createBoard(UUID workspaceId, BoardRequest boardRequest) {
+    public Board createBoard(BoardRequest boardRequest) {
 
         UUID currentUserId = appUserService.getCurrentUserId();
-        Workspace workspaceById = workspaceRepository.getWorkspaceById(workspaceId, currentUserId);
-//        UUID getWorkspaceId = workspaceRepository.getWorkspaceIdByCurrentUser(currentUserId);
-        if (workspaceById.getWorkspaceId() != workspaceId){
+        Workspace workspaceById = workspaceRepository.getWorkspaceById(boardRequest.getWorkspaceId(), currentUserId);
+        System.out.println("Workspace in Board : " + workspaceById);
+        System.out.println("Get workspace id by current user : " + workspaceById.getWorkspaceId());
+        UUID requestWorkspaceId = boardRequest.getWorkspaceId();
+        System.out.println("Workspace Id : " + requestWorkspaceId);
+        //        UUID getWorkspaceId = workspaceRepository.getWorkspaceIdByCurrentUser(currentUserId);
+        if ( !requestWorkspaceId.equals(workspaceById.getWorkspaceId())){
             throw new NotFoundException("Workspace Id not found");
+        }else {
+            boardRequest.setIsVerified(true);
         }
-        return boardRepository.createBoard(workspaceById.getWorkspaceId(), boardRequest);
+
+        return boardRepository.createBoard(boardRequest);
     }
 
 //    public Boolean isVerifeied(){

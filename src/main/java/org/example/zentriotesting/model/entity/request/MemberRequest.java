@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.example.zentriotesting.model.entity.RoleName;
 
 import java.util.UUID;
 
@@ -11,11 +12,8 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class BoardRequest {
-    private String title;
-    private String description;
-    private String cover;
-//    private Boolean isFavourite;
-    private Boolean isVerified;
-    private UUID workspaceId;
+public class MemberRequest {
+    private RoleName roleName;
+    private String email;
+    private UUID boardId;
 }
