@@ -4,6 +4,7 @@ import org.apache.ibatis.annotations.*;
 import org.example.zentriotesting.model.entity.Board;
 import org.example.zentriotesting.model.entity.request.BoardRequest;
 
+import java.util.List;
 import java.util.UUID;
 
 @Mapper
@@ -26,4 +27,16 @@ public interface BoardRepository {
             @Result(property = "workspaceId", column = "workspace_id"),
     })
     Board createBoard(@Param("request") BoardRequest boardRequest);
+
+    @Select("""
+        SELECT * FROM boards WHERE workspace_id = #{workspaceId}
+    """)
+    @ResultMap("boardMapper")
+    List<Board> getAllBoardsByWorkspaceId(UUID workspaceId);
+
+    @Select("""
+        SELECT * FROM boards WHERE workspace_id = #{workspaceId} AND board_id = #{boardId}
+    """)
+    @ResultMap("boardMapper")
+    Board getBoardByWorkspaceIdAndBoardId(UUID workspaceId, UUID boardId);
 }

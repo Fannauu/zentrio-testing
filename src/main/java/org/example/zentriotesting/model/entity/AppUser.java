@@ -30,13 +30,13 @@ public class AppUser implements UserDetails {
     private Boolean isReset;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+//    private RoleName role;
 
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority(email));
-        return authorities;
+//
+        return  null;
     }
 
 

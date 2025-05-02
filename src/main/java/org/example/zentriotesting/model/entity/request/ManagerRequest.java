@@ -1,4 +1,4 @@
-package org.example.zentriotesting.model.entity;
+package org.example.zentriotesting.model.entity.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +11,8 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Role {
+public class ManagerRequest {
+    private UUID userId;
+    private UUID boardId;
     private UUID roleId;
-    private String roleName;
 }

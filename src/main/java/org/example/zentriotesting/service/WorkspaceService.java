@@ -12,11 +12,15 @@ public interface WorkspaceService {
 
     List<Workspace> getAllWorkspaces();
 
-    Workspace getWorkspaceByTitle(String title);
-
-    Workspace updateWorkspaceByTitle(String title, WorkspaceRequest workspaceRequest);
+    List<Workspace> getWorkspaceByTitle(String title);
 
     Workspace getWorkspaceById(UUID workspaceId);
 
     Workspace updateWorkspaceById(UUID workspaceId, WorkspaceRequest workspaceRequest);
+
+    Workspace updateWorkspaceTitleByWorkspaceId(UUID workspaceId, String title);
+
+    Workspace updateWorkspaceDescriptionByWorkspaceId(UUID workspaceId, String description);
+
+    UUID checkExistedWorkspaceId(UUID existedWorkspaceId);
 }

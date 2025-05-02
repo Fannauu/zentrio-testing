@@ -2,6 +2,7 @@ package org.example.zentriotesting.controller;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.example.zentriotesting.model.entity.request.ProfileRequest;
 import org.example.zentriotesting.model.entity.response.ApiResponse;
 import org.example.zentriotesting.model.entity.response.AppUserDTO;
@@ -9,10 +10,7 @@ import org.example.zentriotesting.service.AppUserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 
@@ -39,7 +37,7 @@ public class ProfileController {
     }
 
     @PutMapping
-    public ResponseEntity<ApiResponse<AppUserDTO>> updateUserProfile(ProfileRequest profileRequest) {
+    public ResponseEntity<ApiResponse<AppUserDTO>> updateUserProfile(@RequestBody @Valid ProfileRequest profileRequest) {
         ApiResponse<AppUserDTO> apiResponse = ApiResponse.<AppUserDTO>builder()
                 .success(true)
                 .message("Updated profile successfully")

@@ -3,6 +3,7 @@ package org.example.zentriotesting.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.zentriotesting.model.entity.Workspace;
 import org.example.zentriotesting.model.entity.request.WorkspaceRequest;
@@ -27,7 +28,7 @@ public class WorkspaceController {
 
     @Operation(summary = "Create workspace")
     @PostMapping()
-    public ResponseEntity<ApiResponse<Workspace>> createWorkspace(@RequestBody WorkspaceRequest workspaceRequest){
+    public ResponseEntity<ApiResponse<Workspace>> createWorkspace(@RequestBody @Valid WorkspaceRequest workspaceRequest){
         ApiResponse<Workspace> response = ApiResponse.<Workspace> builder()
                 .success(true)
                 .message("Created workspace successfully!")
@@ -69,8 +70,8 @@ public class WorkspaceController {
 
     @Operation(summary = "Get workspace by title")
     @GetMapping("title/{title}")
-    public ResponseEntity<ApiResponse<Workspace>> getWorkspaceByTitle(@PathVariable("title") String title){
-        ApiResponse<Workspace> response = ApiResponse.<Workspace> builder()
+    public ResponseEntity<ApiResponse<List<Workspace>>> getWorkspaceByTitle(@PathVariable("title") String title){
+        ApiResponse<List<Workspace>> response = ApiResponse.<List<Workspace>> builder()
                 .success(true)
                 .message("Get workspace by title successfully!")
                 .status(HttpStatus.OK)
@@ -83,7 +84,7 @@ public class WorkspaceController {
 
     @Operation(summary = "Edit workspace by id")
     @PutMapping("/update/{workspace-id}")
-    public ResponseEntity<ApiResponse<Workspace>> updateWorkspaceById(@PathVariable("workspace-id") UUID workspaceId, @RequestBody WorkspaceRequest workspaceRequest){
+    public ResponseEntity<ApiResponse<Workspace>> updateWorkspaceById(@PathVariable("workspace-id") UUID workspaceId, @RequestBody @Valid WorkspaceRequest workspaceRequest){
         ApiResponse<Workspace> response = ApiResponse.<Workspace> builder()
                 .success(true)
                 .message("Update workspace by id successfully!")
@@ -95,33 +96,33 @@ public class WorkspaceController {
         return ResponseEntity.ok(response);
     }
 
-    @Operation(summary = "Edit workspace by title")
-    @PutMapping("/update/{title}")
-    public ResponseEntity<ApiResponse<Workspace>> updateWorkspaceByTitle(@PathVariable("title") String title, @RequestBody WorkspaceRequest workspaceRequest){
+    @Operation(summary = "Edit workspace title by workspace id")
+    @PatchMapping("/updateTitle/{workspace-id}")
+    public ResponseEntity<ApiResponse<Workspace>> updateWorkspaceTitleByWorkspaceId(@PathVariable("workspace-id") UUID workspaceId, @RequestBody String title){
         ApiResponse<Workspace> response = ApiResponse.<Workspace> builder()
                 .success(true)
                 .message("Update workspace by title successfully!")
                 .status(HttpStatus.OK)
-                .payload(workspaceService.updateWorkspaceByTitle(title, workspaceRequest))
+                .payload(workspaceService.updateWorkspaceTitleByWorkspaceId(workspaceId, title))
                 .timestamp(LocalDateTime.now())
                 .build();
 
         return ResponseEntity.ok(response);
     }
 
-//    @Operation(summary = "Edit workspace fields")
-//    @PatchMapping("/update")
-//    public ResponseEntity<ApiResponse<Workspace>> updateWorkspaceField(@PathVariable String title, @RequestBody WorkspaceRequest workspaceRequest){
-//        ApiResponse<Workspace> response = ApiResponse.<Workspace> builder()
-//                .success(true)
-//                .message("Update workspace by title successfully!")
-//                .httpStatus(HttpStatus.OK)
-//                .payload(workspaceService.updateWorkspaceByTitle(title, workspaceRequest))
-//                .timestamp(LocalDateTime.now())
-//                .build();
-//
-//        return ResponseEntity.ok(response);
-//    }
+    @Operation(summary = "Edit workspace description by workspace id")
+    @PatchMapping("/updateDescription/{workspace-id}")
+    public ResponseEntity<ApiResponse<Workspace>> updateWorkspaceDescriptionByWorkspaceId(@PathVariable("workspace-id") UUID workspaceId, @RequestBody String description){
+        ApiResponse<Workspace> response = ApiResponse.<Workspace> builder()
+                .success(true)
+                .message("Update workspace by title successfully!")
+                .status(HttpStatus.OK)
+                .payload(workspaceService.updateWorkspaceDescriptionByWorkspaceId(workspaceId, description))
+                .timestamp(LocalDateTime.now())
+                .build();
+
+        return ResponseEntity.ok(response);
+    }
 
 
 

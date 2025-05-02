@@ -38,10 +38,10 @@ public class GlobalExceptionHandler {
         return createProblemDetail(HttpStatus.BAD_REQUEST, "Invalid property access or getter not found: " + ex.getMessage());
     }
 
-    @ExceptionHandler(SQLException.class)
-    public ProblemDetail handleSQLException(SQLException ex) {
-        return createProblemDetail(HttpStatus.INTERNAL_SERVER_ERROR, "Database operation failed. Please try again later.");
-    }
+//    @ExceptionHandler(SQLException.class)
+//    public ProblemDetail handleSQLException(SQLException ex) {
+//        return createProblemDetail(HttpStatus.INTERNAL_SERVER_ERROR, "Database operation failed. Please try again later.");
+//    }
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ProblemDetail handleIllegalArgumentException(IllegalArgumentException ex) {

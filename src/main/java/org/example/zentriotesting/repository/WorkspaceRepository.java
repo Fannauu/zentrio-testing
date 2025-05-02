@@ -11,8 +11,7 @@ import java.util.UUID;
 public interface WorkspaceRepository {
 
     @Select("""
-        INSERT INTO workspaces(title, description, created_by) 
-        VALUES (#{request.title}, #{request.description}, #{userId})
+        INSERT INTO workspaces(title, description, created_by) VALUES (#{request.title}, #{request.description}, #{userId})
         RETURNING *
     """)
     @Results(id = "workspaceMapper", value = {
@@ -38,32 +37,25 @@ public interface WorkspaceRepository {
     Workspace getWorkspaceById(UUID workspaceId, UUID userId);
 
     @Select("""
-        SELECT * FROM workspaces WHERE title ILIKE '%'||#{title}||'%' AND created_by = #{userId}
+        SELECT * FROM workspaces WHERE title ILIKE '%'|| #{title} ||'%' AND created_by = #{userId}
     """)
     @ResultMap("workspaceMapper")
-    Workspace getWorkspaceByTitle(String title, UUID userId);
+    List<Workspace> getWorkspaceByTitle(String title, UUID userId);
 
     @Select("""
-        UPDATE workspaces 
-        SET title = #{request.title}, description = #{request.description}
+        UPDATE workspaces SET title = #{request.title}, description = #{request.description}
         WHERE workspace_id = #{workspaceId} AND created_by = #{userId}
     """)
     @ResultMap("workspaceMapper")
-    Workspace updateWorkspaceById(UUID workspaceId, WorkspaceRequest workspaceRequest, UUID userId);
+    Workspace updateWorkspaceById(UUID workspaceId, @Param("request") WorkspaceRequest workspaceRequest, UUID userId);
 
     @Select("""
-        UPDATE workspaces 
-        SET title = #{request.title}, description = #{request.description}
-        WHERE title ILIKE '%' || #{title} || '%' AND created_by = #{userId}
+        UPDATE workspaces SET title = #{request.title}, updated_at = #{request.updatedAt}
+        WHERE workspace_id = #{request.workspaceId}
+        RETURNING *
     """)
     @ResultMap("workspaceMapper")
-    Workspace updateWorkspaceByTitle(String title, @Param("request") WorkspaceRequest workspaceRequest, UUID userId);
-
-    @Select("""
-        SELECT workspaces.workspace_id FROM workspaces WHERE created_by = #{userId}
-    """)
-    @ResultMap("workspaceMapper")
-    UUID getWorkspaceIdByCurrentUser(UUID userId);
+    Workspace updateWorkspaceTitleByWorkspaceId(@Param("request") Workspace titleRequest);
 
 }
 

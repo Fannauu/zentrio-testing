@@ -3,6 +3,7 @@ package org.example.zentriotesting.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.mail.MessagingException;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.zentriotesting.exception.NotFoundException;
 import org.example.zentriotesting.jwt.JwtService;
@@ -54,7 +55,7 @@ public class AuthController {
 
     @PostMapping("/register")
 //    adding forgot Boolean isForgot for new flow with reset password
-    public ResponseEntity<?> register(@RequestBody AppUserRequest request) throws Exception {
+    public ResponseEntity<?> register(@RequestBody @Valid AppUserRequest request) throws Exception {
         System.out.println("request: " + request);
 
         AppUser existingUser = appUserService.getUserByEmail(request.getEmail());
@@ -101,21 +102,21 @@ public class AuthController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<?> authenticate(@RequestBody AuthRequest request) throws Exception {
-        authenticate(request.getEmail(), request.getPassword());
-        final UserDetails userDetails = appUserService.loadUserByUsername(request.getEmail());
+    public ResponseEntity<?> authenticate(@RequestBody @Valid AuthRequest request) throws Exception {
+        authenticate(request.getIdentifier(), request.getPassword());
+        final UserDetails userDetails = appUserService.loadUserByUsername(request.getIdentifier());
 
-        AppUser user = appUserService.getUserByEmail(request.getEmail());
+        AppUser user = appUserService.getUserByEmail(request.getIdentifier());
 
         if (!user.getIsVerified()) {
-            throw new BadCredentialsException("Your gmail " + request.getEmail() + " are not verified");
+            throw new BadCredentialsException("Your gmail " + request.getIdentifier() + " are not verified");
         }
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new BadCredentialsException("Wrong password");
         }
 
-        if (!user.getEmail().equals(request.getEmail())) {
+        if (!user.getEmail().equals(request.getIdentifier())) {
             throw new BadCredentialsException("Wrong email");
         }
 
@@ -244,7 +245,7 @@ public class AuthController {
 
     @Operation(summary = "Reset Password")
     @PutMapping("/reset-password")
-    public ResponseEntity<ApiResponse<String>> resetPassword(@RequestBody ResetPassword resetPassword) {
+    public ResponseEntity<ApiResponse<String>> resetPassword(@RequestBody @Valid ResetPassword resetPassword) {
         AppUser userDetails = appUserService.getUserByEmail(resetPassword.getEmail());
         if (userDetails == null) {
             ApiResponse<String> apiResponse = ApiResponse.<String>builder()
